@@ -36,4 +36,6 @@ public class Timer : MonoBehaviour
             OnTimerEnd?.Invoke();
         }
     }
+
+    public void Stop() => _active = false;
 }

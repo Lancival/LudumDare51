@@ -7,7 +7,8 @@ public class Goal : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            Debug.Log("You win!");
+            Timer.instance.Stop();
+            SceneLoader.instance.LoadScene();
         }
     }
 }
