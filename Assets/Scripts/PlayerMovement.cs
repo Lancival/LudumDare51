@@ -1,18 +1,27 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(Rigidbody2D)), RequireComponent(typeof(PlayerInput)), RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(Rigidbody2D)), RequireComponent(typeof(SpriteRenderer))]
 public class PlayerMovement : MonoBehaviour
 {
+    // Components
     private Rigidbody2D rb;
     private SpriteRenderer sr;
+    private Timer timer;
 
+    // Movement Parameters
     [SerializeField] private float speed = 5;
     [SerializeField] private float jumpHeight = 5;
     [SerializeField] private float jumpBuffer = 0.2f;
     [SerializeField] private float coyoteTime = 0.2f;
-    [SerializeField] private float raycastDistance = 0.1f;
 
+    [SerializeField] private Sprite cubeOff;
+    [SerializeField] private Sprite cubeOn;
+
+    public bool controlled = false;
+
+    // Internal movement variables
     private float xInput;
 
     private float lastJumpTime;
@@ -20,31 +29,73 @@ public class PlayerMovement : MonoBehaviour
     private bool jumpTriggered => !jumpConsumed && Time.time - lastJumpTime <= jumpBuffer;
 
     private float lastGroundedTime;
-    private bool grounded = false;
+    private bool grounded = true;
     private bool canJump => grounded || Time.time - lastGroundedTime <= coyoteTime;
+
+    // Movement replay
+    private Vector3 startPosition;
+    private List<Vector2> positions = new List<Vector2>();
+    private List<Vector2>.Enumerator iterator;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
+        iterator = positions.GetEnumerator();
+        startPosition = transform.position;
+        
+        timer = Timer.instance;
+        timer.OnTimerEnd += Reset;
+    }
+
+    private void Reset()
+    {
+        iterator = positions.GetEnumerator();
+        transform.position = startPosition;
+        grounded = true;
+    }
+
+    public void Activate()
+    {
+        controlled = true;
+        rb.bodyType = RigidbodyType2D.Dynamic;
+        sr.sprite = cubeOn;
+    }
+
+    public void Deactivate()
+    {
+        controlled = false;
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        sr.sprite = cubeOff;
     }
 
     void FixedUpdate()
     {
-        float x = xInput * speed;
-        float y;
-        if (jumpTriggered && canJump)
+        if (timer.active)
         {
-            y = jumpHeight;
-            jumpConsumed = true;
-            grounded = false;
-        }
-        else
-        {
-            y = rb.velocity.y;
-        }
+            if (controlled)
+            {
+                float x = xInput * speed;
+                float y;
+                if (jumpTriggered && canJump)
+                {
+                    y = jumpHeight;
+                    jumpConsumed = true;
+                    grounded = false;
+                }
+                else
+                {
+                    y = rb.velocity.y;
+                }
 
-        rb.velocity = new Vector2(x, y);
+                rb.velocity = new Vector2(x, y);
+                positions.Add(transform.position);
+            }
+            else if (iterator.MoveNext())
+            {
+                transform.position = iterator.Current;
+            }
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -56,11 +107,25 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void OnJump()
+    public void OnJump()
     {
+        StartTimer();
         lastJumpTime = Time.time;
         jumpConsumed = false;
     }
 
-    void OnMove(InputValue value) => xInput = value.Get<Vector2>().x;
+    public void OnMove(InputValue value)
+    {
+        StartTimer();
+        xInput = value.Get<Vector2>().x;
+    }
+
+    private void StartTimer()
+    {
+        if (!timer.active)
+        {
+            positions.Clear();
+            timer.StartTime();
+        }
+    }
 }
