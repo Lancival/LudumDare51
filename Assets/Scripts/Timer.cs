@@ -7,7 +7,7 @@ public class Timer : MonoBehaviour
     
     private float startTime;
 
-    private float ttl => _ttl;
+    public float ttl => _ttl;
     private float _ttl = 10.0f;
 
     public bool active => _active;
