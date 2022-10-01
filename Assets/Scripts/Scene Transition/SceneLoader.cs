@@ -74,6 +74,8 @@ public class SceneLoader : MonoBehaviour
     public void LoadScene() => LoadScene(defaultScene, duration);
     public void LoadScene(string sceneName) => LoadScene(sceneName, duration);
     public void LoadScene(float transitionDuration) => LoadScene(defaultScene, transitionDuration);
+    public void ReloadScene() => LoadScene(SceneManager.GetActiveScene().name, duration);
+    public void ReloadScene(float transitionDuration) => LoadScene(SceneManager.GetActiveScene().name, transitionDuration);
 
     // Scene loading implementation
     private IEnumerator LoadSceneAsync(string sceneName, float transitionDuration)
