@@ -30,12 +30,16 @@ public class Timer : MonoBehaviour
     void FixedUpdate()
     {
         _ttl = 10.0f - (Time.fixedTime - startTime);
-        if (_ttl <= 0f)
+        if (_ttl <= 0f && _active)
         {
             _active = false;
             OnTimerEnd?.Invoke();
         }
     }
 
-    public void Stop() => _active = false;
+    public void Stop()
+    {
+        _active = false;
+        this.enabled = false;
+    }
 }

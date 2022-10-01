@@ -8,6 +8,7 @@ public class Goal : MonoBehaviour
         if (other.tag == "Player")
         {
             Timer.instance.Stop();
+            InputManager.instance.DisableMovement(3f);
             SceneLoader.instance.LoadScene();
         }
     }

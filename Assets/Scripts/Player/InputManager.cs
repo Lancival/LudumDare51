@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,12 +12,27 @@ public class InputManager : MonoBehaviour
     private int currentPlayerIndex = 0;
     private PlayerMovement currentPlayer => players[currentPlayerIndex];
 
+    private bool movementDisabled = false;
+
     void Awake() => _instance = this;
 
     void Start() => currentPlayer.Activate();
 
-    void OnMove(InputValue value) => currentPlayer.OnMove(value);
-    void OnJump() => currentPlayer.OnJump();
+    void OnMove(InputValue value)
+    {
+        if (!movementDisabled)
+        {
+            currentPlayer.OnMove(value);
+        }
+    }
+    void OnJump()
+    {
+        if (!movementDisabled)
+        {
+            currentPlayer.OnJump();
+        }
+    }
+
     void OnNext()
     {
         if (!Timer.instance.active)
@@ -42,5 +58,20 @@ public class InputManager : MonoBehaviour
             }
             currentPlayer.Activate();
         }
+    }
+
+    public void DisableMovement(float duration)
+    {
+        if (!movementDisabled)
+        {
+            movementDisabled = true;
+            StartCoroutine(EnableMovement(duration));
+        }
+    }
+
+    private IEnumerator EnableMovement(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        movementDisabled = false;
     }
 }

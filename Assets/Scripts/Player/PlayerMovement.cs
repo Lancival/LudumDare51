@@ -53,6 +53,8 @@ public class PlayerMovement : MonoBehaviour
         iterator = positions.GetEnumerator();
         transform.position = startPosition;
         grounded = true;
+        InputManager.instance.DisableMovement(0.5f);
+        rb.velocity = Vector2.zero;
     }
 
     public void Activate()
