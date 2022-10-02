@@ -12,7 +12,7 @@ public class InputManager : MonoBehaviour
     private int currentPlayerIndex = 0;
     private PlayerMovement currentPlayer => players[currentPlayerIndex];
 
-    private bool movementDisabled = false;
+    [SerializeField] private bool movementDisabled = false;
 
     void Awake() => _instance = this;
 
@@ -74,4 +74,6 @@ public class InputManager : MonoBehaviour
         yield return new WaitForSeconds(duration);
         movementDisabled = false;
     }
+
+    public void EnableMovementImmediate() => movementDisabled = false;
 }
