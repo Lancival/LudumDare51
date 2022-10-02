@@ -1,9 +1,12 @@
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class Timer : MonoBehaviour
 {
     public static Timer instance => _instance;
     private static Timer _instance;
+
+    private AudioSource audioSource;
     
     private float startTime;
 
@@ -15,7 +18,11 @@ public class Timer : MonoBehaviour
 
     public event System.Action OnTimerEnd;
 
-    void Awake() => _instance = this;
+    void Awake()
+    {
+        _instance = this;
+        audioSource = GetComponent<AudioSource>();
+    }
 
     public void StartTime()
     {
@@ -30,10 +37,18 @@ public class Timer : MonoBehaviour
     void FixedUpdate()
     {
         _ttl = 10.0f - (Time.fixedTime - startTime);
-        if (_ttl <= 0f && _active)
+        if (_active)
         {
-            _active = false;
-            OnTimerEnd?.Invoke();
+            if (_ttl <= 0f)
+            {
+                _active = false;
+                OnTimerEnd?.Invoke();
+            }
+            else if (Mathf.FloorToInt(_ttl + Time.fixedDeltaTime) != Mathf.FloorToInt(_ttl))
+            {
+                Debug.Log(_ttl);
+                audioSource.Play();
+            }
         }
     }
 
