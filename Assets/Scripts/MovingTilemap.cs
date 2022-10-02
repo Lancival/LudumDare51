@@ -26,4 +26,7 @@ public class MovingTilemap : MonoBehaviour
         displacing = false;
         transform.position = startPosition;
     }
+
+    public void SetEndPositionX(float dist) => endPosition = new Vector2(dist, endPosition.y);
+    public void SetEndPositionY(float dist) => endPosition = new Vector2(endPosition.x, dist);
 }
