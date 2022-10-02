@@ -55,12 +55,13 @@ public class PlayerMovement : MonoBehaviour
         grounded = true;
         InputManager.instance.DisableMovement(0.5f);
         rb.velocity = Vector2.zero;
+        rb.bodyType = RigidbodyType2D.Kinematic;
     }
 
     public void Activate()
     {
         controlled = true;
-        rb.bodyType = RigidbodyType2D.Dynamic;
+        //rb.bodyType = RigidbodyType2D.Dynamic;
         sr.sprite = cubeOn;
     }
 
@@ -126,6 +127,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!timer.active)
         {
+            rb.bodyType = RigidbodyType2D.Dynamic;
             positions.Clear();
             timer.StartTime();
         }

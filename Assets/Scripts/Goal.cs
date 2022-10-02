@@ -9,7 +9,15 @@ public class Goal : MonoBehaviour
         {
             Timer.instance.Stop();
             InputManager.instance.DisableMovement(3f);
-            SceneLoader.instance.LoadScene();
+
+            if (gameObject.name == "Secret Goal")
+            {
+                SceneLoader.instance.LoadScene("Bonus Level");
+            }
+            else
+            {
+                SceneLoader.instance.LoadScene();
+            }
         }
     }
 }
