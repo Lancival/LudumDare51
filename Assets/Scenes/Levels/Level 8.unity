@@ -1004,7 +1004,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6166707467466524988, guid: 4e89c2ef0507845589e8ca4deeb617eb, type: 3}
       propertyPath: m_text
-      value: Airgapped
+      value: Air-gapped
       objectReference: {fileID: 0}
     - target: {fileID: 6166707467466524990, guid: 4e89c2ef0507845589e8ca4deeb617eb, type: 3}
       propertyPath: m_AnchorMax.y
