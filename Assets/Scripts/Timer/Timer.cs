@@ -46,7 +46,6 @@ public class Timer : MonoBehaviour
             }
             else if (Mathf.FloorToInt(_ttl + Time.fixedDeltaTime) != Mathf.FloorToInt(_ttl))
             {
-                Debug.Log(_ttl);
                 audioSource.Play();
             }
         }
