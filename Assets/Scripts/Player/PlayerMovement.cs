@@ -13,8 +13,8 @@ public class PlayerMovement : MonoBehaviour
     // Movement Parameters
     [SerializeField] private float speed = 5;
     [SerializeField] private float jumpHeight = 5;
-    [SerializeField] private float jumpBuffer = 0.2f;
-    [SerializeField] private float coyoteTime = 0.2f;
+    [SerializeField] private float jumpBuffer = 0.1f;
+    [SerializeField] private float coyoteTime = 0.1f;
 
     [SerializeField] private Sprite cubeOff;
     [SerializeField] private Sprite cubeOn;
@@ -29,8 +29,11 @@ public class PlayerMovement : MonoBehaviour
     private bool jumpTriggered => !jumpConsumed && Time.time - lastJumpTime <= jumpBuffer;
 
     private float lastGroundedTime;
+    private float lastActualJump = 0f;
     private bool grounded = true;
-    private bool canJump => grounded || Time.time - lastGroundedTime <= coyoteTime;
+    private bool airJump = false;
+    private bool canJump => grounded || airJump || Time.time - lastGroundedTime <= coyoteTime;
+    private bool jumpOnCooldown => Time.time - lastActualJump <= jumpBuffer;
 
     // Movement replay
     private Vector3 startPosition;
@@ -80,11 +83,13 @@ public class PlayerMovement : MonoBehaviour
             {
                 float x = xInput * speed;
                 float y;
-                if (jumpTriggered && canJump)
+                if (jumpTriggered && canJump && !jumpOnCooldown)
                 {
                     y = jumpHeight;
                     jumpConsumed = true;
                     grounded = false;
+                    airJump = false;
+                    lastActualJump = Time.time;
                 }
                 else
                 {
@@ -103,13 +108,30 @@ public class PlayerMovement : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.isTrigger == false)
+        if (!other.isTrigger)
         {
             lastGroundedTime = Time.time;
             grounded = true;
+            airJump = true;
         }
     }
-    void OnTriggerStay2D(Collider2D other) => OnTriggerEnter2D(other);
+    void OnTriggerStay2D(Collider2D other)
+    {
+        if (!other.isTrigger && !jumpOnCooldown)
+        {
+            lastGroundedTime = Time.time;
+            grounded = true;
+            airJump = true;
+        }
+    }
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (!other.isTrigger && !jumpOnCooldown)
+        {
+            lastGroundedTime = Time.time;
+            grounded = false;
+        }
+    }
 
     public void OnJump()
     {
