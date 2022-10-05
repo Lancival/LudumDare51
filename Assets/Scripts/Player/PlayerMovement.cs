@@ -109,6 +109,7 @@ public class PlayerMovement : MonoBehaviour
             grounded = true;
         }
     }
+    void OnTriggerStay2D(Collider2D other) => OnTriggerEnter2D(other);
 
     public void OnJump()
     {
