@@ -17,6 +17,7 @@ public class Timer : MonoBehaviour
     private bool _active = false;
 
     public event System.Action OnTimerEnd;
+    public event System.Action OnTimerStart;
 
     void Awake()
     {
@@ -31,6 +32,7 @@ public class Timer : MonoBehaviour
             startTime = Time.time;
             _active = true;
             _ttl = 10.0f;
+            OnTimerStart?.Invoke();
         }
     }
 
