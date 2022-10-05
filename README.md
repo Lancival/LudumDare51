@@ -6,7 +6,7 @@ TTL:10 has 10 levels plus one bonus stage. Code, art, and sound effects were cre
 
 ## Controls
 Mouse and keyboard only:
-- W or Left Arrow keys to move left.
+- A or Left Arrow keys to move left.
 - D or Right Arrow keys to move right.
 - Space bar to jump.
 - Q and E to cycle between different cubes (only while the timer isn't running).
